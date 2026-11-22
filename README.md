@@ -5,49 +5,45 @@ Spring Boot + MySQL + React app for tracking review cadence on owned items.
 ## Stack
 
 - **Backend:** Spring Boot 3.4, JPA, Flyway, springdoc OpenAPI
-- **Database:** MySQL 8 in Docker (`ReviewTracker`)
-- **Frontend:** Vite + React + TypeScript
+- **Database:** MySQL 8
+- **Frontend:** Vite + React + TypeScript (served by nginx in Docker)
 
 ## Prerequisites
 
-- Java 21+
-- Maven 3.9+
 - Docker / Docker Compose
-- Node.js 20+
 
-## Run locally
+No local Java, Maven, or Node.js install is required when using Docker Compose.
 
-### 1. Start MySQL
+## Run with Docker Compose
 
-```bash
-docker compose up -d
-```
-
-Waits until healthy:
+From the repo root:
 
 ```bash
-docker compose ps
+docker compose up --build
 ```
 
-### 2. Start the API
+| Service | URL |
+|---------|-----|
+| App (frontend) | http://localhost:5173 |
+| API | http://localhost:8080 |
+| Swagger UI | http://localhost:8080/swagger-ui.html |
+| MySQL | `localhost:3306` |
+
+The frontend nginx container proxies `/api` to the backend, so the UI talks to the API on the same origin.
+
+Stop everything:
 
 ```bash
-cd backend
-mvn spring-boot:run
+docker compose down
 ```
 
-- API: http://localhost:8080
-- Swagger UI: http://localhost:8080/swagger-ui.html
+## Optional: run services locally (without containers for app code)
 
-### 3. Start the frontend
+If you prefer to develop outside Docker:
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-App: http://localhost:5173 (proxies `/api` to the backend)
+1. Start only MySQL: `docker compose up -d mysql`
+2. Backend: Java 21+, Maven 3.9+ — `cd backend && mvn spring-boot:run`
+3. Frontend: Node.js 20+ — `cd frontend && npm install && npm run dev`
 
 ## API
 
@@ -62,4 +58,5 @@ App: http://localhost:5173 (proxies `/api` to the backend)
 
 - Database: `ReviewTracker`
 - User / password: `reviewtracker` / `reviewtracker`
-- JDBC: `jdbc:mysql://localhost:3306/ReviewTracker`
+- JDBC (host): `jdbc:mysql://localhost:3306/ReviewTracker`
+- JDBC (compose network): `jdbc:mysql://mysql:3306/ReviewTracker`

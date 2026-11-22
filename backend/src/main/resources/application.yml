@@ -5,9 +5,9 @@ spring:
   application:
     name: review-tracker-api
   datasource:
-    url: jdbc:mysql://localhost:3306/ReviewTracker?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: reviewtracker
-    password: reviewtracker
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/ReviewTracker?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${SPRING_DATASOURCE_USERNAME:reviewtracker}
+    password: ${SPRING_DATASOURCE_PASSWORD:reviewtracker}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
