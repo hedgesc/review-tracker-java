@@ -1,0 +1,168 @@
+:root {
+  color: #1c2430;
+  background: #f3f5f8;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  line-height: 1.45;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at top left, rgba(28, 110, 164, 0.12), transparent 40%),
+    linear-gradient(180deg, #eef3f8 0%, #f7f8fa 40%, #f3f5f8 100%);
+}
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.header p {
+  margin: 0.35rem 0 0;
+  color: #5b6775;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1.5rem 0 1rem;
+}
+
+.tabs button,
+.form button,
+.panel-header button,
+.row button {
+  border: 1px solid #c9d2dc;
+  background: #fff;
+  color: #1c2430;
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+  font: inherit;
+}
+
+.tabs button.active,
+.form button[type='submit'],
+.panel-header button {
+  background: #1c6ea4;
+  border-color: #1c6ea4;
+  color: #fff;
+}
+
+.form button.secondary {
+  background: #fff;
+  color: #1c2430;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.banner {
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.banner.error {
+  background: #fdeceb;
+  color: #8a1f17;
+}
+
+.banner.success {
+  background: #e7f6ed;
+  color: #1f6a3c;
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #d7dee7;
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.panel h2,
+.panel h3 {
+  margin-top: 0;
+}
+
+.form {
+  display: grid;
+  gap: 0.9rem;
+  max-width: 520px;
+}
+
+.form.filters {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  max-width: none;
+  align-items: end;
+  margin-bottom: 1rem;
+}
+
+.form label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  border: 1px solid #c9d2dc;
+  border-radius: 8px;
+  padding: 0.55rem 0.7rem;
+  background: #fff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.65rem 0.5rem;
+  border-bottom: 1px solid #e3e8ee;
+  vertical-align: top;
+}
+
+.empty,
+.created {
+  color: #5b6775;
+}
+
+.review-form {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e3e8ee;
+}
+
+.row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1rem;
+}
