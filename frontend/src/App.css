@@ -40,7 +40,7 @@ body {
   margin: 1.5rem 0 1rem;
 }
 
-.tabs button,
+.tabs a,
 .form button,
 .panel-header button,
 .row button {
@@ -51,9 +51,11 @@ body {
   padding: 0.55rem 0.9rem;
   cursor: pointer;
   font: inherit;
+  text-decoration: none;
+  display: inline-block;
 }
 
-.tabs button.active,
+.tabs a.active,
 .form button[type='submit'],
 .panel-header button {
   background: #1c6ea4;
@@ -165,4 +167,9 @@ td {
   gap: 0.75rem;
   align-items: center;
   margin-top: 1rem;
+}
+
+.row a {
+  color: #1c6ea4;
+  font-weight: 600;
 }
