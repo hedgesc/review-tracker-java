@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 
 import { paths } from '@/config/paths'
+import { useItems } from '@/features/items/api/get-items'
 import { useCreateReview } from '@/features/reviews/api/create-review'
 
 type CreateReviewFormProps = {
@@ -14,12 +15,21 @@ export function CreateReviewForm({
   allowItemIdEdit = false,
 }: CreateReviewFormProps) {
   const navigate = useNavigate()
-  const [itemIdInput, setItemIdInput] = useState(
+  const [selectedItemId, setSelectedItemId] = useState(
     initialItemId != null ? String(initialItemId) : '',
   )
   const [reviewerEmail, setReviewerEmail] = useState('')
   const [reviewNote, setReviewNote] = useState('')
   const [error, setError] = useState<string | null>(null)
+
+  const itemsQuery = useItems({
+    params: { take: 100 },
+    queryConfig: {
+      enabled: allowItemIdEdit,
+    },
+  })
+
+  const items = itemsQuery.data ?? []
 
   const createReviewMutation = useCreateReview({
     mutationConfig: {
@@ -36,9 +46,9 @@ export function CreateReviewForm({
     event.preventDefault()
     setError(null)
 
-    const itemId = allowItemIdEdit ? Number(itemIdInput) : initialItemId
+    const itemId = allowItemIdEdit ? Number(selectedItemId) : initialItemId
     if (itemId == null || Number.isNaN(itemId) || itemId < 1) {
-      setError('Item ID is required')
+      setError('Item is required')
       return
     }
 
@@ -56,14 +66,27 @@ export function CreateReviewForm({
       {error && <div className="banner error">{error}</div>}
       {allowItemIdEdit && (
         <label>
-          Item ID
-          <input
-            type="number"
-            value={itemIdInput}
-            onChange={(e) => setItemIdInput(e.target.value)}
-            required
-            min={1}
-          />
+          Item
+          {itemsQuery.isPending ? (
+            <p className="empty">Loading items…</p>
+          ) : itemsQuery.isError ? (
+            <div className="banner error">{itemsQuery.error.message}</div>
+          ) : (
+            <select
+              value={selectedItemId}
+              onChange={(e) => setSelectedItemId(e.target.value)}
+              required
+            >
+              <option value="" disabled>
+                Select an item
+              </option>
+              {items.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          )}
         </label>
       )}
       <label>
