@@ -19,15 +19,16 @@ No local Java, Maven, or Node.js install is required when using Docker Compose.
 From the repo root:
 
 ```bash
-docker compose up --build
+docker compose up -d --build
+docker compose watch            # automatically refresh containers as you make changes
 ```
 
-| Service | URL |
-|---------|-----|
-| App (frontend) | http://localhost:5173 |
-| API | http://localhost:8080 |
-| Swagger UI | http://localhost:8080/swagger-ui.html |
-| MySQL | `localhost:3306` |
+| Service        | URL                                   |
+| -------------- | ------------------------------------- |
+| App (frontend) | http://localhost:5173                 |
+| API            | http://localhost:8080                 |
+| Swagger UI     | http://localhost:8080/swagger-ui.html |
+| MySQL          | `localhost:3306`                      |
 
 The frontend nginx container proxies `/api` to the backend, so the UI talks to the API on the same origin.
 
@@ -47,12 +48,12 @@ If you prefer to develop outside Docker:
 
 ## API
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/api/items` | Create an item |
-| `GET` | `/api/items` | List items (`filter=overdue` optional, `skip`, `take`) |
-| `POST` | `/api/items/{id}/reviews` | Record a review (advances next due date) |
-| `GET` | `/api/reviews` | Audit list (`itemId`, `from`, `to`, `skip`, `take`) |
+| Method | Path                      | Description                                            |
+| ------ | ------------------------- | ------------------------------------------------------ |
+| `POST` | `/api/items`              | Create an item                                         |
+| `GET`  | `/api/items`              | List items (`filter=overdue` optional, `skip`, `take`) |
+| `POST` | `/api/items/{id}/reviews` | Record a review (advances next due date)               |
+| `GET`  | `/api/reviews`            | Audit list (`itemId`, `from`, `to`, `skip`, `take`)    |
 
 ## Database credentials (dev)
 

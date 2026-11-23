@@ -38,6 +38,12 @@ services:
       timeout: 5s
       retries: 12
       start_period: 60s
+    watch:
+      - action: rebuild
+        path: ./backend
+        ignore:
+          - bin/
+          - obj/
 
   frontend:
     build:
@@ -49,6 +55,12 @@ services:
         condition: service_healthy
     ports:
       - "5173:80"
+    watch:
+      - action: sync
+        path: ./frontend/src
+        target: /app/src
+      - action:
+        path: ./frontend/package.json
 
 volumes:
   reviewtracker-mysql-data:
