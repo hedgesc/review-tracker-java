@@ -5,15 +5,11 @@ import { useCreateReview } from '@/features/reviews/api/create-review'
 type CreateReviewFormProps = {
   itemId?: number
   allowItemIdEdit?: boolean
-  onCancel?: () => void
-  onSuccess?: (reviewId: number, itemId: number) => void
 }
 
 export function CreateReviewForm({
   itemId: initialItemId,
   allowItemIdEdit = false,
-  onCancel,
-  onSuccess,
 }: CreateReviewFormProps) {
   const [itemIdInput, setItemIdInput] = useState(
     initialItemId != null ? String(initialItemId) : '',
@@ -30,10 +26,9 @@ export function CreateReviewForm({
         setMessage(`Created review #${review.id} for item #${review.itemId}`)
         setReviewerEmail('')
         setReviewNote('')
-        if (allowItemIdEdit) {
+        if (allowItemIdEdit && initialItemId == null) {
           setItemIdInput('')
         }
-        onSuccess?.(review.id, review.itemId)
       },
       onError: (err) => {
         setMessage(null)
@@ -64,11 +59,6 @@ export function CreateReviewForm({
 
   return (
     <form className="form review-form" onSubmit={onSubmit}>
-      <h3>
-        {allowItemIdEdit
-          ? 'Create review'
-          : `Create review for item #${initialItemId}`}
-      </h3>
       {error && <div className="banner error">{error}</div>}
       {message && <div className="banner success">{message}</div>}
       {allowItemIdEdit && (
@@ -106,11 +96,6 @@ export function CreateReviewForm({
         <button type="submit" disabled={createReviewMutation.isPending}>
           Save review
         </button>
-        {onCancel && (
-          <button type="button" className="secondary" onClick={onCancel}>
-            Cancel
-          </button>
-        )}
       </div>
     </form>
   )
