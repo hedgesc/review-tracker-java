@@ -1,30 +1,26 @@
 import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router'
 
+import { paths } from '@/config/paths'
 import { useItems } from '@/features/items/api/get-items'
 import { useCreateReview } from '@/features/reviews/api/create-review'
 
 type CreateReviewFormProps = {
   itemId?: number
-  itemName?: string
   allowItemIdEdit?: boolean
-  onCancel?: () => void
-  onSuccess?: (reviewId: number, itemId: number) => void
 }
 
 export function CreateReviewForm({
   itemId: initialItemId,
-  itemName: initialItemName,
   allowItemIdEdit = false,
-  onCancel,
-  onSuccess,
 }: CreateReviewFormProps) {
+  const navigate = useNavigate()
   const [selectedItemId, setSelectedItemId] = useState(
     initialItemId != null ? String(initialItemId) : '',
   )
   const [reviewerEmail, setReviewerEmail] = useState('')
   const [reviewNote, setReviewNote] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [message, setMessage] = useState<string | null>(null)
 
   const itemsQuery = useItems({
     params: { take: 100 },
@@ -34,28 +30,13 @@ export function CreateReviewForm({
   })
 
   const items = itemsQuery.data ?? []
-  const selectedItemName =
-    initialItemName ??
-    items.find((item) => String(item.id) === selectedItemId)?.name
 
   const createReviewMutation = useCreateReview({
     mutationConfig: {
-      onSuccess: (review) => {
-        const itemLabel =
-          selectedItemName ??
-          items.find((item) => item.id === review.itemId)?.name ??
-          `item #${review.itemId}`
-        setError(null)
-        setMessage(`Created review #${review.id} for ${itemLabel}`)
-        setReviewerEmail('')
-        setReviewNote('')
-        if (allowItemIdEdit) {
-          setSelectedItemId('')
-        }
-        onSuccess?.(review.id, review.itemId)
+      onSuccess: () => {
+        void navigate(paths.reviews.getHref())
       },
       onError: (err) => {
-        setMessage(null)
         setError(err.message)
       },
     },
@@ -64,7 +45,6 @@ export function CreateReviewForm({
   function onSubmit(event: FormEvent) {
     event.preventDefault()
     setError(null)
-    setMessage(null)
 
     const itemId = allowItemIdEdit ? Number(selectedItemId) : initialItemId
     if (itemId == null || Number.isNaN(itemId) || itemId < 1) {
@@ -83,13 +63,7 @@ export function CreateReviewForm({
 
   return (
     <form className="form review-form" onSubmit={onSubmit}>
-      <h3>
-        {allowItemIdEdit
-          ? 'Create review'
-          : `Create review for ${initialItemName ?? `item #${initialItemId}`}`}
-      </h3>
       {error && <div className="banner error">{error}</div>}
-      {message && <div className="banner success">{message}</div>}
       {allowItemIdEdit && (
         <label>
           Item
@@ -138,11 +112,6 @@ export function CreateReviewForm({
         <button type="submit" disabled={createReviewMutation.isPending}>
           Save review
         </button>
-        {onCancel && (
-          <button type="button" className="secondary" onClick={onCancel}>
-            Cancel
-          </button>
-        )}
       </div>
     </form>
   )

@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router'
 
 import { paths } from '@/config/paths'
@@ -7,14 +7,7 @@ import { formatDate } from '@/utils/format'
 
 const PAGE_SIZE = 20
 
-type ItemsListProps = {
-  activeItemId: number | null
-  onSelectItem: (itemId: number, itemName: string) => void
-  message?: string | null
-  footer?: ReactNode
-}
-
-export function ItemsList({ activeItemId, onSelectItem, message, footer }: ItemsListProps) {
+export function ItemsList() {
   const [filter, setFilter] = useState<'all' | 'overdue'>('all')
   const [skip, setSkip] = useState(0)
 
@@ -51,8 +44,6 @@ export function ItemsList({ activeItemId, onSelectItem, message, footer }: Items
         </label>
       </div>
 
-      {message && <div className="banner success">{message}</div>}
-
       {itemsQuery.isPending && <p className="empty">Loading items…</p>}
       {itemsQuery.isError && <div className="banner error">{itemsQuery.error.message}</div>}
 
@@ -83,13 +74,7 @@ export function ItemsList({ activeItemId, onSelectItem, message, footer }: Items
                 <td>{formatDate(item.lastReviewedAtUtc)}</td>
                 <td>{formatDate(item.nextReviewDueAtUtc)}</td>
                 <td>
-                  <button
-                    type="button"
-                    onClick={() => onSelectItem(item.id, item.name)}
-                    disabled={activeItemId === item.id}
-                  >
-                    Create Review
-                  </button>
+                  <Link to={paths.createReview.getHref(item.id)}>Create Review</Link>
                 </td>
               </tr>
             ))}
@@ -112,8 +97,6 @@ export function ItemsList({ activeItemId, onSelectItem, message, footer }: Items
           Next
         </button>
       </div>
-
-      {footer}
     </section>
   )
 }

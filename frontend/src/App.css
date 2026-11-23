@@ -153,6 +153,16 @@ td {
   vertical-align: top;
 }
 
+td a {
+  color: #1c6ea4;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+td a:hover {
+  text-decoration: underline;
+}
+
 .empty,
 .created {
   color: #5b6775;
