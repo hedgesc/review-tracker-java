@@ -43,6 +43,7 @@ body {
 .tabs a,
 .form button,
 .panel-header button,
+.panel-header a,
 .row button {
   border: 1px solid #c9d2dc;
   background: #fff;
@@ -57,7 +58,8 @@ body {
 
 .tabs a.active,
 .form button[type='submit'],
-.panel-header button {
+.panel-header button,
+.panel-header a {
   background: #1c6ea4;
   border-color: #1c6ea4;
   color: #fff;

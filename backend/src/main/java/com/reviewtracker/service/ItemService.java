@@ -6,14 +6,15 @@ import com.reviewtracker.domain.ReviewFrequency;
 import com.reviewtracker.dto.CreateItemRequest;
 import com.reviewtracker.dto.CreateReviewRequest;
 import com.reviewtracker.dto.ItemResponse;
-import com.reviewtracker.dto.OverdueItemResponse;
 import com.reviewtracker.dto.ReviewResponse;
 import com.reviewtracker.repository.ItemRepository;
+import com.reviewtracker.repository.OffsetBasedPageRequest;
 import com.reviewtracker.repository.ReviewRepository;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,11 +45,20 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<OverdueItemResponse> listOverdue() {
-        Instant now = Instant.now();
-        return itemRepository.findByNextReviewDueAtUtcBeforeOrderByNextReviewDueAtUtcAsc(now).stream()
-                .map(this::toOverdueItemResponse)
-                .toList();
+    public List<ItemResponse> listItems(String filter, int skip, int take) {
+        int safeSkip = Math.max(skip, 0);
+        int safeTake = take <= 0 ? 100 : take;
+
+        var pageable = new OffsetBasedPageRequest(
+                safeSkip,
+                safeTake,
+                Sort.by(Sort.Direction.ASC, "nextReviewDueAtUtc"));
+
+        var page = "overdue".equals(filter)
+                ? itemRepository.findByNextReviewDueAtUtcBefore(Instant.now(), pageable)
+                : itemRepository.findAll(pageable);
+
+        return page.getContent().stream().map(this::toItemResponse).toList();
     }
 
     @Transactional
@@ -97,16 +107,6 @@ public class ItemService {
                 item.getOwner(),
                 item.getReviewFrequency(),
                 item.getCreatedAtUtc(),
-                item.getLastReviewedAtUtc(),
-                item.getNextReviewDueAtUtc());
-    }
-
-    private OverdueItemResponse toOverdueItemResponse(Item item) {
-        return new OverdueItemResponse(
-                item.getId(),
-                item.getName(),
-                item.getOwner(),
-                item.getReviewFrequency(),
                 item.getLastReviewedAtUtc(),
                 item.getNextReviewDueAtUtc());
     }

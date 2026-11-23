@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from 'react'
+import { Link } from 'react-router'
 
+import { paths } from '@/config/paths'
 import { useReviews } from '@/features/reviews/api/get-reviews'
 import { formatDate, toIsoFromLocalInput } from '@/utils/format'
 
@@ -38,7 +40,10 @@ export function ReviewsList() {
 
   return (
     <section className="panel">
-      <h2>Review audit</h2>
+      <div className="panel-header">
+        <h2>Review audit</h2>
+        <Link to={paths.createReview.getHref()}>Create Review</Link>
+      </div>
       <form className="form filters" onSubmit={onFilterReviews}>
         <label>
           Item ID

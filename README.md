@@ -50,7 +50,7 @@ If you prefer to develop outside Docker:
 | Method | Path | Description |
 |--------|------|-------------|
 | `POST` | `/api/items` | Create an item |
-| `GET` | `/api/items/overdue` | List overdue items |
+| `GET` | `/api/items` | List items (`filter=overdue` optional, `skip`, `take`) |
 | `POST` | `/api/items/{id}/reviews` | Record a review (advances next due date) |
 | `GET` | `/api/reviews` | Audit list (`itemId`, `from`, `to`, `skip`, `take`) |
 

@@ -18,15 +18,6 @@ export interface ItemResponse {
   nextReviewDueAtUtc: string
 }
 
-export interface OverdueItemResponse {
-  id: number
-  name: string
-  owner: string
-  reviewFrequency: ReviewFrequency
-  lastReviewedAtUtc: string | null
-  nextReviewDueAtUtc: string
-}
-
 export interface ReviewResponse {
   id: number
   itemId: number
