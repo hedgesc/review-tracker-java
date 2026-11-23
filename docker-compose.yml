@@ -61,7 +61,7 @@ services:
         - action: sync
           path: ./frontend/src
           target: /app/src
-        - action:
+        - action: rebuild
           path: ./frontend/package.json
 
 volumes:
