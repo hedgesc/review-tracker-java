@@ -13,6 +13,7 @@ export const paths = {
   },
   createReview: {
     path: '/reviews/create',
-    getHref: () => '/reviews/create',
+    getHref: (itemId?: number) =>
+      itemId != null ? `/reviews/create?itemId=${itemId}` : '/reviews/create',
   },
 } as const
