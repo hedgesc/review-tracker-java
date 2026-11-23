@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router'
 
+import { paths } from '@/config/paths'
 import { useCreateReview } from '@/features/reviews/api/create-review'
 
 type CreateReviewFormProps = {
@@ -11,27 +13,20 @@ export function CreateReviewForm({
   itemId: initialItemId,
   allowItemIdEdit = false,
 }: CreateReviewFormProps) {
+  const navigate = useNavigate()
   const [itemIdInput, setItemIdInput] = useState(
     initialItemId != null ? String(initialItemId) : '',
   )
   const [reviewerEmail, setReviewerEmail] = useState('')
   const [reviewNote, setReviewNote] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [message, setMessage] = useState<string | null>(null)
 
   const createReviewMutation = useCreateReview({
     mutationConfig: {
-      onSuccess: (review) => {
-        setError(null)
-        setMessage(`Created review #${review.id} for item #${review.itemId}`)
-        setReviewerEmail('')
-        setReviewNote('')
-        if (allowItemIdEdit && initialItemId == null) {
-          setItemIdInput('')
-        }
+      onSuccess: () => {
+        void navigate(paths.reviews.getHref())
       },
       onError: (err) => {
-        setMessage(null)
         setError(err.message)
       },
     },
@@ -40,7 +35,6 @@ export function CreateReviewForm({
   function onSubmit(event: FormEvent) {
     event.preventDefault()
     setError(null)
-    setMessage(null)
 
     const itemId = allowItemIdEdit ? Number(itemIdInput) : initialItemId
     if (itemId == null || Number.isNaN(itemId) || itemId < 1) {
@@ -60,7 +54,6 @@ export function CreateReviewForm({
   return (
     <form className="form review-form" onSubmit={onSubmit}>
       {error && <div className="banner error">{error}</div>}
-      {message && <div className="banner success">{message}</div>}
       {allowItemIdEdit && (
         <label>
           Item ID

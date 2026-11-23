@@ -1,30 +1,25 @@
 import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router'
 
+import { paths } from '@/config/paths'
 import { useCreateItem } from '@/features/items/api/create-item'
-import { REVIEW_FREQUENCIES, type ItemResponse, type ReviewFrequency } from '@/types/api'
-import { formatDate, toIsoFromLocalInput } from '@/utils/format'
+import { REVIEW_FREQUENCIES, type ReviewFrequency } from '@/types/api'
+import { toIsoFromLocalInput } from '@/utils/format'
 
 export function CreateItemForm() {
+  const navigate = useNavigate()
   const [name, setName] = useState('')
   const [owner, setOwner] = useState('')
   const [reviewFrequency, setReviewFrequency] = useState<ReviewFrequency>('Monthly')
   const [nextDueLocal, setNextDueLocal] = useState('')
-  const [createdItem, setCreatedItem] = useState<ItemResponse | null>(null)
-  const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const createItemMutation = useCreateItem({
     mutationConfig: {
-      onSuccess: (item) => {
-        setCreatedItem(item)
-        setMessage(`Created item #${item.id}`)
-        setError(null)
-        setName('')
-        setOwner('')
-        setNextDueLocal('')
+      onSuccess: () => {
+        void navigate(paths.home.getHref())
       },
       onError: (err) => {
-        setMessage(null)
         setError(err.message)
       },
     },
@@ -33,7 +28,6 @@ export function CreateItemForm() {
   function onSubmit(event: FormEvent) {
     event.preventDefault()
     setError(null)
-    setMessage(null)
     createItemMutation.mutate({
       name,
       owner,
@@ -46,7 +40,6 @@ export function CreateItemForm() {
     <section className="panel">
       <h2>Create item</h2>
       {error && <div className="banner error">{error}</div>}
-      {message && <div className="banner success">{message}</div>}
       <form className="form" onSubmit={onSubmit}>
         <label>
           Name
@@ -88,15 +81,6 @@ export function CreateItemForm() {
           Create
         </button>
       </form>
-      {createdItem && (
-        <div className="created">
-          <h3>Latest created item</h3>
-          <p>
-            #{createdItem.id} — {createdItem.name} ({createdItem.owner}) ·{' '}
-            {createdItem.reviewFrequency} · due {formatDate(createdItem.nextReviewDueAtUtc)}
-          </p>
-        </div>
-      )}
     </section>
   )
 }
