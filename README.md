@@ -20,7 +20,7 @@ From the repo root:
 
 ```bash
 docker compose up -d --build
-docker compose watch            # automatically refresh containers as you make changes
+docker compose watch            # rebuilds backend/frontend containers when their code changes
 ```
 
 | Service        | URL                                   |
