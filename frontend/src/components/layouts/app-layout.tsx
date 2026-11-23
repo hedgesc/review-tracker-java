@@ -15,10 +15,7 @@ export function AppLayout() {
 
       <nav className="tabs">
         <NavLink to={paths.home.getHref()} className={navLinkClass} end>
-          Create Item
-        </NavLink>
-        <NavLink to={paths.overdue.getHref()} className={navLinkClass}>
-          Overdue
+          Items
         </NavLink>
         <NavLink to={paths.reviews.getHref()} className={navLinkClass}>
           Reviews

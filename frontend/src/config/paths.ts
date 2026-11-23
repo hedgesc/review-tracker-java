@@ -3,12 +3,16 @@ export const paths = {
     path: '/',
     getHref: () => '/',
   },
-  overdue: {
-    path: '/overdue',
-    getHref: () => '/overdue',
+  createItem: {
+    path: '/items/create',
+    getHref: () => '/items/create',
   },
   reviews: {
     path: '/reviews',
     getHref: () => '/reviews',
+  },
+  createReview: {
+    path: '/reviews/create',
+    getHref: () => '/reviews/create',
   },
 } as const

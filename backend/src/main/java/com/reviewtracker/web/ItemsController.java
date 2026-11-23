@@ -3,7 +3,6 @@ package com.reviewtracker.web;
 import com.reviewtracker.dto.CreateItemRequest;
 import com.reviewtracker.dto.CreateReviewRequest;
 import com.reviewtracker.dto.ItemResponse;
-import com.reviewtracker.dto.OverdueItemResponse;
 import com.reviewtracker.dto.ReviewResponse;
 import com.reviewtracker.service.ItemService;
 import jakarta.validation.Valid;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -33,9 +33,12 @@ public class ItemsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @GetMapping("/overdue")
-    public List<OverdueItemResponse> listOverdue() {
-        return itemService.listOverdue();
+    @GetMapping
+    public List<ItemResponse> listItems(
+            @RequestParam(required = false) String filter,
+            @RequestParam(defaultValue = "0") int skip,
+            @RequestParam(defaultValue = "100") int take) {
+        return itemService.listItems(filter, skip, take);
     }
 
     @PostMapping("/{id}/reviews")

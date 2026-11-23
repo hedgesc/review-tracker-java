@@ -26,7 +26,7 @@ export const useCreateReview = ({ mutationConfig }: UseCreateReviewOptions = {})
     mutationFn: createReview,
     onSuccess: (...args) => {
       void queryClient.invalidateQueries({
-        queryKey: ['items', 'overdue'],
+        queryKey: ['items'],
       })
       void queryClient.invalidateQueries({
         queryKey: ['reviews'],

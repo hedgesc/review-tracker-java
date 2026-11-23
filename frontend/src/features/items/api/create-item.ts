@@ -4,8 +4,6 @@ import { api } from '@/lib/api-client'
 import type { MutationConfig } from '@/lib/react-query'
 import type { CreateItemRequest, ItemResponse } from '@/types/api'
 
-import { getOverdueItemsQueryOptions } from './get-overdue-items'
-
 export const createItem = (data: CreateItemRequest): Promise<ItemResponse> => {
   return api.post('/api/items', data)
 }
@@ -22,7 +20,7 @@ export const useCreateItem = ({ mutationConfig }: UseCreateItemOptions = {}) => 
     mutationFn: createItem,
     onSuccess: (...args) => {
       void queryClient.invalidateQueries({
-        queryKey: getOverdueItemsQueryOptions().queryKey,
+        queryKey: ['items'],
       })
       onSuccess?.(...args)
     },
