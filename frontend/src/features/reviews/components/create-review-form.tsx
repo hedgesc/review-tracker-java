@@ -1,9 +1,11 @@
 import { useState, type FormEvent } from 'react'
 
+import { useItems } from '@/features/items/api/get-items'
 import { useCreateReview } from '@/features/reviews/api/create-review'
 
 type CreateReviewFormProps = {
   itemId?: number
+  itemName?: string
   allowItemIdEdit?: boolean
   onCancel?: () => void
   onSuccess?: (reviewId: number, itemId: number) => void
@@ -11,11 +13,12 @@ type CreateReviewFormProps = {
 
 export function CreateReviewForm({
   itemId: initialItemId,
+  itemName: initialItemName,
   allowItemIdEdit = false,
   onCancel,
   onSuccess,
 }: CreateReviewFormProps) {
-  const [itemIdInput, setItemIdInput] = useState(
+  const [selectedItemId, setSelectedItemId] = useState(
     initialItemId != null ? String(initialItemId) : '',
   )
   const [reviewerEmail, setReviewerEmail] = useState('')
@@ -23,15 +26,31 @@ export function CreateReviewForm({
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
 
+  const itemsQuery = useItems({
+    params: { take: 100 },
+    queryConfig: {
+      enabled: allowItemIdEdit,
+    },
+  })
+
+  const items = itemsQuery.data ?? []
+  const selectedItemName =
+    initialItemName ??
+    items.find((item) => String(item.id) === selectedItemId)?.name
+
   const createReviewMutation = useCreateReview({
     mutationConfig: {
       onSuccess: (review) => {
+        const itemLabel =
+          selectedItemName ??
+          items.find((item) => item.id === review.itemId)?.name ??
+          `item #${review.itemId}`
         setError(null)
-        setMessage(`Created review #${review.id} for item #${review.itemId}`)
+        setMessage(`Created review #${review.id} for ${itemLabel}`)
         setReviewerEmail('')
         setReviewNote('')
         if (allowItemIdEdit) {
-          setItemIdInput('')
+          setSelectedItemId('')
         }
         onSuccess?.(review.id, review.itemId)
       },
@@ -47,9 +66,9 @@ export function CreateReviewForm({
     setError(null)
     setMessage(null)
 
-    const itemId = allowItemIdEdit ? Number(itemIdInput) : initialItemId
+    const itemId = allowItemIdEdit ? Number(selectedItemId) : initialItemId
     if (itemId == null || Number.isNaN(itemId) || itemId < 1) {
-      setError('Item ID is required')
+      setError('Item is required')
       return
     }
 
@@ -67,20 +86,33 @@ export function CreateReviewForm({
       <h3>
         {allowItemIdEdit
           ? 'Create review'
-          : `Create review for item #${initialItemId}`}
+          : `Create review for ${initialItemName ?? `item #${initialItemId}`}`}
       </h3>
       {error && <div className="banner error">{error}</div>}
       {message && <div className="banner success">{message}</div>}
       {allowItemIdEdit && (
         <label>
-          Item ID
-          <input
-            type="number"
-            value={itemIdInput}
-            onChange={(e) => setItemIdInput(e.target.value)}
-            required
-            min={1}
-          />
+          Item
+          {itemsQuery.isPending ? (
+            <p className="empty">Loading items…</p>
+          ) : itemsQuery.isError ? (
+            <div className="banner error">{itemsQuery.error.message}</div>
+          ) : (
+            <select
+              value={selectedItemId}
+              onChange={(e) => setSelectedItemId(e.target.value)}
+              required
+            >
+              <option value="" disabled>
+                Select an item
+              </option>
+              {items.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          )}
         </label>
       )}
       <label>

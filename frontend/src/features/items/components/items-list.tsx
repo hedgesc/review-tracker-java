@@ -9,7 +9,7 @@ const PAGE_SIZE = 20
 
 type ItemsListProps = {
   activeItemId: number | null
-  onSelectItem: (itemId: number) => void
+  onSelectItem: (itemId: number, itemName: string) => void
   message?: string | null
   footer?: ReactNode
 }
@@ -85,7 +85,7 @@ export function ItemsList({ activeItemId, onSelectItem, message, footer }: Items
                 <td>
                   <button
                     type="button"
-                    onClick={() => onSelectItem(item.id)}
+                    onClick={() => onSelectItem(item.id, item.name)}
                     disabled={activeItemId === item.id}
                   >
                     Create Review

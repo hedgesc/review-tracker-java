@@ -4,25 +4,28 @@ import { ItemsList } from '@/features/items/components/items-list'
 import { CreateReviewForm } from '@/features/reviews/components/create-review-form'
 
 export function ItemsRoute() {
-  const [activeItemId, setActiveItemId] = useState<number | null>(null)
+  const [activeItem, setActiveItem] = useState<{ id: number; name: string } | null>(
+    null,
+  )
   const [message, setMessage] = useState<string | null>(null)
 
   return (
     <ItemsList
-      activeItemId={activeItemId}
-      onSelectItem={(itemId) => {
+      activeItemId={activeItem?.id ?? null}
+      onSelectItem={(itemId, itemName) => {
         setMessage(null)
-        setActiveItemId(itemId)
+        setActiveItem({ id: itemId, name: itemName })
       }}
       message={message}
       footer={
-        activeItemId != null ? (
+        activeItem != null ? (
           <CreateReviewForm
-            itemId={activeItemId}
-            onCancel={() => setActiveItemId(null)}
+            itemId={activeItem.id}
+            itemName={activeItem.name}
+            onCancel={() => setActiveItem(null)}
             onSuccess={(reviewId) => {
-              setMessage(`Created review #${reviewId} for item #${activeItemId}`)
-              setActiveItemId(null)
+              setMessage(`Created review #${reviewId} for ${activeItem.name}`)
+              setActiveItem(null)
             }}
           />
         ) : null
