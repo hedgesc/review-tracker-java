@@ -58,11 +58,13 @@ services:
       - "5173:80"
     develop:
       watch:
-        - action: sync
-          path: ./frontend/src
-          target: /app/src
+        # Frontend image is nginx serving a Vite production build, so source
+        # changes must rebuild the image (syncing into /app/src has no effect).
         - action: rebuild
-          path: ./frontend/package.json
+          path: ./frontend
+          ignore:
+            - node_modules/
+            - dist/
 
 volumes:
   reviewtracker-mysql-data:
